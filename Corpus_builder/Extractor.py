@@ -1,0 +1,94 @@
+from .Loader import CorpusLoader
+import re
+
+
+def extract_trigger(sentence: list, trigger: list) -> list:
+    return [token[0] for token in sentence if token[1].lower() in trigger]
+
+
+def is_accept_have(position: int,
+                   sentence: dict,
+                   possessor: str,
+                   possessee: str,
+                   language: str = '') -> bool:
+    counter = [1, 1]
+    if language in ['English', 'Chinese']:
+        for ele in sentence['tree_lst']:
+            if re.match(r'[^0-9]*' + str(position) + ':' + possessor, ele):
+                counter[0] -= 1
+            elif re.match(r'[^0-9]*' + str(position) + ':' + possessee, ele):
+                counter[1] -= 1
+    elif language in ['Finnish']:
+        if sentence['lemma_lst'][int(position) - 1] != 'olla':
+            return False
+        position = -1
+        for ele in sentence['tree_lst']:
+            position = re.match(r'([0-9]+)' + ':' + possessor, ele)
+            if position:
+                position = position.group(1)
+                if 'Case=Ade' in sentence['label_lst'][int(position)-1]:
+                    counter[0] -= 1
+                    break
+        if position and position != -1:
+            for i, ele in enumerate(sentence['tree_lst']):
+                if re.match(r'[^0-9]*' + position + ':' + possessee, ele) and sentence['pos_tag'][i] == 'NOUN':
+                    counter[1] -= 1
+                    break
+    return False if 1 in counter else True
+
+
+def extract_sentence_have(corpus: CorpusLoader,
+                          trigger: list,
+                          possessor: str = '',
+                          possessee: str = '',
+                          language: str = '') -> list:
+    if not (possessee or possessor):
+        raise ValueError('possessor and possessee can not be void string')
+    elif language not in ['English', 'Chinese', 'Finnish']:
+        raise ValueError(f'unaccepted language:{language}')
+    else:
+        re_id_lst = []
+        for sentence in corpus:
+            possible_trigger_pos = extract_trigger(sentence['token_lst'], trigger)
+            if 1 in [is_accept_have(position, sentence, possessor, possessee, language=language)
+                     for position in possible_trigger_pos]:
+                re_id_lst.append(sentence['sent_id'])
+        return re_id_lst
+
+
+def tense_extractor_future(corpus: CorpusLoader,
+                           trigger: list,
+                           language: str = '') -> list:
+    re_id_lst = []
+    if language in ['English', 'Swedish']:
+        for sentence in corpus:
+            position_possible_aux = extract_trigger(sentence['token_lst'], trigger)
+            if 1 in [1 if 'AUX' in sentence['pos_tag'][int(position)-1] else 0 for position in position_possible_aux]:
+                re_id_lst.append(sentence['sent_id'])
+    elif language in ['Italian']:
+        for sentence in corpus:
+            for i, label in enumerate(sentence['label_lst']):
+                if 'Tense=Fut' in label and 'VERB' in sentence['pos_tag'][i]:
+                    re_id_lst.append(sentence['sent_id'])
+    else:
+        raise ValueError(f'unaccepted language: {language}')
+    return re_id_lst
+
+
+def extract_comparison(corpus: CorpusLoader,
+                       trigger: str,
+                       language: str = '') -> list:
+    re_id_lst = []
+    if language in ['English', 'Swedish']:
+        for sentence in corpus:
+            if 1 in [1 if token.endswith(trigger) and 'Degree=Cmp' in sentence['label_lst'][int(position) - 1] and 'ADJ' in sentence['pos_tag'][int(position) - 1]
+                     else 0 for position, token in sentence['token_lst']]:
+                re_id_lst.append(sentence['sent_id'])
+    elif language in ['French']:
+        for sentence in corpus:
+            position_possible_tri = extract_trigger(sentence['token_lst'], [trigger])
+            if 1 in [1 if int(position) < len(sentence['token_lst']) and sentence['pos_tag'][int(position) - 1] == 'ADV' and sentence['pos_tag'][int(position)] == 'ADJ' else 0 for position in position_possible_tri]:
+                re_id_lst.append(sentence['sent_id'])
+    else:
+        raise ValueError(f'unaccepted language: {language}')
+    return re_id_lst
