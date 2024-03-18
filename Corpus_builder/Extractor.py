@@ -75,6 +75,35 @@ def tense_extractor_future(corpus: CorpusLoader,
     return re_id_lst
 
 
+def extract_comparison_fr(position: str, sentence: dict) -> bool:
+    adj_position = re.match(r'([0-9]+)' + ':' + 'advmod', sentence['tree_lst'][int(position)-1])
+    if adj_position and sentence['pos_tag'][int(position)-1] == 'ADV' and sentence['pos_tag'][int(adj_position.group(1))-1] == 'ADJ':
+        for i, lemma in enumerate(sentence['lemma_lst']):
+            if lemma == 'le' and sentence['pos_tag'] == 'DET':
+                det_position = re.match(r'([0-9]+)' + ':' + 'det', sentence['tree_lst'][i])
+                if det_position and int(det_position.group(1)) == position:
+                    return False
+    else:
+        return False
+    return True
+
+
+def postprocess_cmp(sentence: dict, language: str) -> bool:
+    trigger = ''
+    if language == 'English':
+        trigger = 'more'
+    elif language == 'Swedish':
+        trigger = 'mer'
+    else:
+        raise ValueError(f'Unaccepted language{language}')
+    for position, token in sentence['token_lst']:
+        if token.lower() == trigger:
+            more_position = re.match(r'([0-9]+)' + ':' + 'advmod', sentence['tree_lst'][int(position)-1])
+            if more_position and sentence['pos_tag'][int(more_position.group(1))-1] == 'ADJ':
+                return False
+    return True
+
+
 def extract_comparison(corpus: CorpusLoader,
                        trigger: str,
                        language: str = '') -> list:
@@ -84,11 +113,15 @@ def extract_comparison(corpus: CorpusLoader,
             if 1 in [1 if token.endswith(trigger) and 'Degree=Cmp' in sentence['label_lst'][int(position) - 1] and 'ADJ' in sentence['pos_tag'][int(position) - 1]
                      else 0 for position, token in sentence['token_lst']]:
                 re_id_lst.append(sentence['sent_id'])
+        for i, sent_id in enumerate(re_id_lst):
+            if not postprocess_cmp(corpus[sent_id], language):
+                del re_id_lst[i]
     elif language in ['French']:
         for sentence in corpus:
             position_possible_tri = extract_trigger(sentence['token_lst'], [trigger])
-            if 1 in [1 if int(position) < len(sentence['token_lst']) and sentence['pos_tag'][int(position) - 1] == 'ADV' and sentence['pos_tag'][int(position)] == 'ADJ' else 0 for position in position_possible_tri]:
-                re_id_lst.append(sentence['sent_id'])
+            for position in position_possible_tri:
+                if 1 in [extract_comparison_fr(position, sentence) for position in position_possible_tri]:
+                    re_id_lst.append(sentence['sent_id'])
     else:
         raise ValueError(f'unaccepted language: {language}')
     return re_id_lst

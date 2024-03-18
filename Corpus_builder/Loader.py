@@ -10,9 +10,9 @@ def chinese_extract(sentence: list) -> str:
 
 
 def tree_ele_extract(language: str, sentence: list) -> str:
-    if language in ['English', 'Finnish', 'Swedish', 'Italian', 'French']:
+    if language in ['English', 'Finnish', 'Swedish', 'Italian']:
         return english_finnish_extract(sentence)
-    elif language == 'Chinese':
+    elif language in ['Chinese', 'French']:
         return chinese_extract(sentence)
     else:
         raise ValueError(f'Unaccepted language:{language}')
