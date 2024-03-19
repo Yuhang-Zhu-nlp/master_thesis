@@ -17,7 +17,7 @@ It_UD = CorpusLoader('Italian', tree_bank_path, mode='dev', corpus_filter=['UD_I
                                                                              'UD_Italian-ParlaMint', 'UD_Italian-TWITTIRO',
                                                                              'UD_Italian-ParTUT', 'UD_Italian-PoSTWITA', 'UD_Italian-PUD',
                                                                              'UD_Italian-Valico'])
-Fr_UD = CorpusLoader('French', tree_bank_path, mode='dev', corpus_filter=['UD_French-FQB', 'UD_French-ParisStories',
+Fr_UD = CorpusLoader('French', tree_bank_path, mode='train', corpus_filter=['UD_French-FQB', 'UD_French-ParisStories',
                                                                           'UD_French-ParTUT', 'UD_French-PUD', 'UD_French-Rhapsodie',
                                                                           ])
 En_have = extract_sentence_have(En_UD, ['have', 'had', 'has'],
@@ -35,4 +35,5 @@ It_fut = tense_extractor_future(It_UD, [''], language='Italian')
 En_com = extract_comparison(En_UD, 'er', language='English')
 Sw_com = extract_comparison(Sw_UD, 're', language='Swedish')
 Fr_com = extract_comparison(Fr_UD, 'plus', language='French')
-print(len(Sw_com))
+print(len(Fr_com))
+

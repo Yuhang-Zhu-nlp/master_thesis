@@ -77,11 +77,16 @@ def tense_extractor_future(corpus: CorpusLoader,
 
 def extract_comparison_fr(position: str, sentence: dict) -> bool:
     adj_position = re.match(r'([0-9]+)' + ':' + 'advmod', sentence['tree_lst'][int(position)-1])
-    if adj_position and sentence['pos_tag'][int(position)-1] == 'ADV' and sentence['pos_tag'][int(adj_position.group(1))-1] == 'ADJ':
+    if (adj_position and sentence['pos_tag'][int(position)-1] == 'ADV' and
+            sentence['pos_tag'][int(adj_position.group(1)) - 1] == 'ADJ'):
+        noun_position = re.match(r'([0-9]+)' + ':' +
+                                 'amod', sentence['tree_lst'][int(adj_position.group(1))-1])
         for i, lemma in enumerate(sentence['lemma_lst']):
-            if lemma == 'le' and sentence['pos_tag'] == 'DET':
+            if lemma == 'le' and sentence['pos_tag'][i] == 'DET':
                 det_position = re.match(r'([0-9]+)' + ':' + 'det', sentence['tree_lst'][i])
-                if det_position and int(det_position.group(1)) == position:
+                if det_position and (int(det_position.group(1)) == position or det_position.group(1) == adj_position.group(1)):
+                    return False
+                elif det_position and noun_position and det_position.group(1) == noun_position.group(1):
                     return False
     else:
         return False
