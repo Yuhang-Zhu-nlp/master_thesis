@@ -106,7 +106,6 @@ def extract_comparison_fr(position: str, sentence: dict) -> bool:
 
 
 def postprocess_cmp(sentence: dict, language: str) -> bool:
-    trigger = ''
     if language == 'English':
         trigger = 'more'
     elif language == 'Swedish':
@@ -138,14 +137,17 @@ def extract_comparison(corpus: CorpusLoader,
         for i, sent_id in enumerate(re_id_lst):
             if not postprocess_cmp(corpus[sent_id], language):
                 del re_id_lst[i]
+        for i, sent_id in enumerate(re_id_lst_negative):
+            if not postprocess_cmp(corpus[sent_id], language):
+                del re_id_lst_negative[i]
     elif language in ['French']:
         for sentence in corpus:
             position_possible_tri = extract_trigger(sentence['token_lst'], [trigger])
-            for position in position_possible_tri:
-                if 1 in [extract_comparison_fr(position, sentence) for position in position_possible_tri]:
-                    re_id_lst.append(sentence['sent_id'])
-                else:
-                    re_id_lst_negative.append(sentence['sent_id'])
+            if 1 in [extract_comparison_fr(position, sentence) for position in position_possible_tri]:
+                re_id_lst.append(sentence['sent_id'])
+            else:
+                re_id_lst_negative.append(sentence['sent_id'])
     else:
         raise ValueError(f'unaccepted language: {language}')
     return re_id_lst if mode == 'pos' else re_id_lst_negative
+

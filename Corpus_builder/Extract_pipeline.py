@@ -2,6 +2,7 @@ from .Loader import CorpusLoader
 from .Extractor import (extract_sentence_have,
                         tense_extractor_future,
                         extract_comparison)
+import json
 
 
 corpus_filter = {'English': ['UD_English-Atis', 'UD_English-ESLSpok',
@@ -44,7 +45,6 @@ class ExtractPipeline:
 
     def __cmp_extract(self, language: str, mode: str, is_pos: bool = True) -> list:
         corpus = self.copora[self.__langmode2id[f'{language}_{mode}']]
-        trigger = ''
         if language == 'English':
             trigger = 'er'
         elif language == 'Swedish':
@@ -57,7 +57,6 @@ class ExtractPipeline:
 
     def __have_extract(self, language: str, mode: str, is_pos: bool = True) -> list:
         corpus = self.copora[self.__langmode2id[f'{language}_{mode}']]
-        possessor, possessee, trigger = '', '', []
         if language == 'English':
             possessor, possessee, trigger = 'nsubj', 'obj', ['have', 'had', 'has']
         elif language == 'Chinese':
@@ -77,6 +76,47 @@ class ExtractPipeline:
             trigger = ['will']
         elif language == 'Swedish':
             trigger = ['kommer']
-        tense_extractor_future(corpus, trigger,
-                               language=language,
-                               mode='pos' if is_pos else 'neg')
+        return tense_extractor_future(corpus, trigger,
+                                      language=language,
+                                      mode='pos' if is_pos else 'neg')
+
+    def __getitem__(self, item):
+        if isinstance(item, str) and item in self.__langmode2id:
+            return self.copora[self.__langmode2id[item]]
+        else:
+            raise ValueError('item should obey the form language_mode')
+
+    def __len__(self):
+        return len(self.__langmode2id)
+
+    def __str__(self):
+        return str(list(self.__langmode2id.keys()))
+
+    def file_write_in(self, id_list: list, path: str, language: str, mode: str):
+        if not path.endswith('json'):
+            raise ValueError('path should link to a json file')
+        else:
+            corpus = self.copora[self.__langmode2id[f'{language}_{mode}']]
+            str_lst = [corpus[id]['text'] for id in id_list]
+            with open(path, 'w', encoding='utf-8') as fp:
+                json.dump(str_lst, fp)
+
+    def extract_all_write_in(self, path: str):
+        for language in ['English', 'Chinese', 'Finnish']:
+            for mode in ['train', 'dev', 'test']:
+                id_lst = self.__have_extract(language, mode, is_pos=True)
+                self.file_write_in(id_lst, f'{path}/have_{language}_{mode}_pos', language, mode)
+                id_lst = self.__have_extract(language, mode, is_pos=False)
+                self.file_write_in(id_lst, f'{path}/have_{language}_{mode}_neg', language, mode)
+        for language in ['English', 'Swedish', 'French']:
+            for mode in ['train', 'dev', 'test']:
+                id_lst = self.__cmp_extract(language, mode, is_pos=True)
+                self.file_write_in(id_lst, f'{path}/cmp_{language}_{mode}_pos', language, mode)
+                id_lst = self.__have_extract(language, mode, is_pos=False)
+                self.file_write_in(id_lst, f'{path}/cmp_{language}_{mode}_neg', language, mode)
+        for language in ['English', 'Swedish', 'Italian']:
+            for mode in ['train', 'dev', 'test']:
+                id_lst = self.__future_extract(language, mode, is_pos=True)
+                self.file_write_in(id_lst, f'{path}/future_{language}_{mode}_pos', language, mode)
+                id_lst = self.__have_extract(language, mode, is_pos=False)
+                self.file_write_in(id_lst, f'{path}/future_{language}_{mode}_neg', language, mode)

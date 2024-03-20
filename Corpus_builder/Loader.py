@@ -40,6 +40,8 @@ class CorpusLoader:
                                             'label_lst': [], 'lemma_lst': []})
                     elif line2lst[0] == '#' and line2lst[1] == 'sent_id':
                         re_file_lst[-1]['sent_id'] = line2lst[-1]
+                    elif line2lst[0] == '#' and line2lst[1] == 'text':
+                        re_file_lst[-1]['text'] = ' '.join(line2lst[3:])
                     elif line2lst[0].isdigit():
                         re_file_lst[-1]['lemma_lst'].append(line2lst[2])
                         re_file_lst[-1]['label_lst'].append(line2lst[5])
