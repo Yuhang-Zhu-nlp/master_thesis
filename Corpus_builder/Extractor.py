@@ -41,38 +41,50 @@ def extract_sentence_have(corpus: CorpusLoader,
                           trigger: list,
                           possessor: str = '',
                           possessee: str = '',
-                          language: str = '') -> list:
+                          language: str = '',
+                          mode: str = 'pos') -> list:
+    assert mode in ['pos', 'neg']
     if not (possessee or possessor):
         raise ValueError('possessor and possessee can not be void string')
     elif language not in ['English', 'Chinese', 'Finnish']:
         raise ValueError(f'unaccepted language:{language}')
     else:
         re_id_lst = []
+        re_id_lst_negative = []
         for sentence in corpus:
             possible_trigger_pos = extract_trigger(sentence['token_lst'], trigger)
             if 1 in [is_accept_have(position, sentence, possessor, possessee, language=language)
                      for position in possible_trigger_pos]:
                 re_id_lst.append(sentence['sent_id'])
-        return re_id_lst
+            else:
+                re_id_lst_negative.append(sentence['sent_id'])
+        return re_id_lst if mode == 'pos' else re_id_lst_negative
 
 
 def tense_extractor_future(corpus: CorpusLoader,
                            trigger: list,
-                           language: str = '') -> list:
+                           language: str = '',
+                           mode: str = 'pos') -> list:
+    assert mode in ['pos', 'neg']
+    re_id_lst_negative = []
     re_id_lst = []
     if language in ['English', 'Swedish']:
         for sentence in corpus:
             position_possible_aux = extract_trigger(sentence['token_lst'], trigger)
             if 1 in [1 if 'AUX' in sentence['pos_tag'][int(position)-1] else 0 for position in position_possible_aux]:
                 re_id_lst.append(sentence['sent_id'])
+            else:
+                re_id_lst_negative.append(sentence['sent_id'])
     elif language in ['Italian']:
         for sentence in corpus:
             for i, label in enumerate(sentence['label_lst']):
                 if 'Tense=Fut' in label and 'VERB' in sentence['pos_tag'][i]:
                     re_id_lst.append(sentence['sent_id'])
+                else:
+                    re_id_lst_negative.append(sentence['sent_id'])
     else:
         raise ValueError(f'unaccepted language: {language}')
-    return re_id_lst
+    return re_id_lst if mode == 'pos' else re_id_lst_negative
 
 
 def extract_comparison_fr(position: str, sentence: dict) -> bool:
@@ -111,13 +123,18 @@ def postprocess_cmp(sentence: dict, language: str) -> bool:
 
 def extract_comparison(corpus: CorpusLoader,
                        trigger: str,
-                       language: str = '') -> list:
+                       language: str = '',
+                       mode: str = 'pos') -> list:
+    assert mode in ['pos', 'neg']
     re_id_lst = []
+    re_id_lst_negative = []
     if language in ['English', 'Swedish']:
         for sentence in corpus:
             if 1 in [1 if token.endswith(trigger) and 'Degree=Cmp' in sentence['label_lst'][int(position) - 1] and 'ADJ' in sentence['pos_tag'][int(position) - 1]
                      else 0 for position, token in sentence['token_lst']]:
                 re_id_lst.append(sentence['sent_id'])
+            else:
+                re_id_lst_negative.append(sentence['sent_id'])
         for i, sent_id in enumerate(re_id_lst):
             if not postprocess_cmp(corpus[sent_id], language):
                 del re_id_lst[i]
@@ -127,6 +144,8 @@ def extract_comparison(corpus: CorpusLoader,
             for position in position_possible_tri:
                 if 1 in [extract_comparison_fr(position, sentence) for position in position_possible_tri]:
                     re_id_lst.append(sentence['sent_id'])
+                else:
+                    re_id_lst_negative.append(sentence['sent_id'])
     else:
         raise ValueError(f'unaccepted language: {language}')
-    return re_id_lst
+    return re_id_lst if mode == 'pos' else re_id_lst_negative
