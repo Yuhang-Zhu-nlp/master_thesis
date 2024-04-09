@@ -19,7 +19,7 @@ parser.add_argument("--model_name",
                     required=True,
                     choices=['en_bert', 'xlm-roberta', 'ernie'],
                     help="select model you want to train")
-parser.add_argument("--pool method",
+parser.add_argument("--pool_method",
                     type=str,
                     required=True,
                     choices=['mean', 'layer_weight_sum_cls', 'layer_weight_sum_word'],
