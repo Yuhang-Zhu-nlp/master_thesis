@@ -112,7 +112,7 @@ def extract_comparison_fr(position: str, sentence: dict) -> bool:
         noun_position = re.match(r'([0-9]+)' + ':' +
                                  'amod', sentence['tree_lst'][int(adj_position.group(1))-1])
         for i, lemma in enumerate(sentence['lemma_lst']):
-            if lemma == 'le' and sentence['pos_tag'][i] == 'DET':
+            if lemma in ['il', 'le'] and sentence['pos_tag'][i] == 'DET':
                 det_position = re.match(r'([0-9]+)' + ':' + 'det', sentence['tree_lst'][i])
                 if det_position and (int(det_position.group(1)) == position or det_position.group(1) == adj_position.group(1)):
                     return False
@@ -158,7 +158,7 @@ def extract_comparison(corpus: CorpusLoader,
         for i, sent_id in enumerate(re_id_lst_negative):
             if not postprocess_cmp(corpus[sent_id], language):
                 del re_id_lst_negative[i]
-    elif language in ['French']:
+    elif language in ['French', 'Italian']:
         for sentence in corpus:
             position_possible_tri = extract_trigger(sentence['token_lst'], [trigger])
             if 1 in [extract_comparison_fr(position, sentence) for position in position_possible_tri]:

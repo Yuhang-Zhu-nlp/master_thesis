@@ -51,6 +51,8 @@ class ExtractPipeline:
             trigger = 'er'
         elif language == 'Swedish':
             trigger = 're'
+        elif language == 'Italian':
+            trigger = 'più'
         else:
             trigger = 'plus'
         return extract_comparison(corpus, trigger,
