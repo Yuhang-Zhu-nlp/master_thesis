@@ -1,5 +1,5 @@
 from transformers import BertModel
-from classifier_module import classfier_module
+from models.classifier_module import classfier_module
 
 class english_bert(classfier_module):
     def __init__(self,

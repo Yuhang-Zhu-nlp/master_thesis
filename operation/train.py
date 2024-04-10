@@ -1,13 +1,11 @@
+import sys
+sys.path.append('../')
 import argparse
 import torch
-from trainer import Trainer4classfier
-from dataset import dataset
-from XLM_RoBERTa import xlm_roberta_pooling_representation
-from english_bert import english_bert
-from ErnieM import erniem_pooling_representation
-from transformers import (AutoTokenizer,
-                          BertTokenizer,
-                          TrainingArguments)
+from libs.trainer import Trainer4classfier
+from libs.dataset import dataset
+from libs.load_tokenizer import load_tokenizer_model
+from transformers import TrainingArguments
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--pos_path_train", type=str, required=True, help="training set for positive instances")
@@ -34,16 +32,7 @@ parser.add_argument("--checkpoints_dir", type=str, required=True, help="path to 
 parser.add_argument("--output_dir", type=str, required=True, help="path to save model")
 args = parser.parse_args()
 
-if args.model_name == 'en_bert':
-    tokenizer = BertTokenizer.from_pretrained('bert-large-cased')
-    model = english_bert(pool_method=args.pool_method)
-elif args.model_name == 'xlm-roberta':
-    tokenizer = AutoTokenizer.from_pretrained('xlm-roberta-large')
-    model = xlm_roberta_pooling_representation(pool_method=args.pool_method)
-elif args.model_name == 'ernie':
-    tokenizer = AutoTokenizer.from_pretrained('susnato/ernie-m-large_pytorch')
-    model = erniem_pooling_representation(pool_method=args.pool_method)
-
+tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method)
 train_args = TrainingArguments(
     args.checkpoints_dir,
     learning_rate=args.learning_rate,
@@ -72,7 +61,6 @@ trainer = Trainer4classfier(model=model,
                             train_dataset=dataset_train,
                             eval_dataset=dataset_validation,
                             data_collator=dataset.batch_collector_,
-                            tokenizer=tokenizer,
                             compute_metrics=Trainer4classfier.compute_metrics)
 
 trainer.train()

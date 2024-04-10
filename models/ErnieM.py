@@ -1,5 +1,5 @@
 from transformers import ErnieMModel
-from classifier_module import classfier_module
+from models.classifier_module import classfier_module
 import torch
 class erniem_pooling_representation(classfier_module):
   def __init__(self,

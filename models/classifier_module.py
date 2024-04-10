@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from transformers import XLMRobertaModel
 from typing import List, Tuple, Dict
 
 # model building

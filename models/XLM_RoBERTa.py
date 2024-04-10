@@ -1,4 +1,4 @@
-from classifier_module import classfier_module
+from models.classifier_module import classfier_module
 from transformers import XLMRobertaModel
 class xlm_roberta_pooling_representation(classfier_module):
   def __init__(self,
