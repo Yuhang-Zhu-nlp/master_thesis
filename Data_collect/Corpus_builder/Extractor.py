@@ -168,4 +168,3 @@ def extract_comparison(corpus: CorpusLoader,
     else:
         raise ValueError(f'unaccepted language: {language}')
     return re_id_lst if mode == 'pos' else re_id_lst_negative
-
