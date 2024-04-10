@@ -33,7 +33,7 @@ parser.add_argument("--epoch", type=int, required=False, default=30, help="max e
 parser.add_argument("--warmup_steps", type=int, required=False, default=100, help="learning rate warm-up")
 parser.add_argument("--checkpoints_dir", type=str, required=True, help="path to store checkpoints")
 parser.add_argument("--output_dir", type=str, required=True, help="path to save model")
-parser.add_argument("--is_wandb", type=bool, action="store_true", required=True, help="whether store training in wandb")
+parser.add_argument("--is_wandb", action="store_true", required=True, help="whether store training in wandb")
 args = parser.parse_args()
 
 tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method)
@@ -44,7 +44,7 @@ if args.is_wandb:
         "learning_rate": 5e-4,
         "architecture": "ernie-m-large",
         "dataset": "UD",
-        "epochs": max_epoch,
+        "epochs": args.epoch,
         }
     )
 train_args = TrainingArguments(
@@ -78,4 +78,6 @@ trainer = Trainer4classfier(model=model,
                             compute_metrics=Trainer4classfier.compute_metrics)
 
 trainer.train()
+if args.is_wandb:
+    wandb.finish()
 torch.save(model.state_dict(), args.output_dir)
