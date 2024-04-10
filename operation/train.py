@@ -33,19 +33,20 @@ parser.add_argument("--epoch", type=int, required=False, default=30, help="max e
 parser.add_argument("--warmup_steps", type=int, required=False, default=100, help="learning rate warm-up")
 parser.add_argument("--checkpoints_dir", type=str, required=True, help="path to store checkpoints")
 parser.add_argument("--output_dir", type=str, required=True, help="path to save model")
-parser.add_argument("--is_wandb", type=bool, required=True, help="whether store training in wandb")
+parser.add_argument("--is_wandb", type=bool, action="store_true", required=True, help="whether store training in wandb")
 args = parser.parse_args()
 
 tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method)
-wandb.init(
-    project="master_thesis_johan",
-    config={
-    "learning_rate": 5e-4,
-    "architecture": "ernie-m-large",
-    "dataset": "UD",
-    "epochs": max_epoch,
-    }
-)
+if args.is_wandb:
+    wandb.init(
+        project="master_thesis_johan",
+        config={
+        "learning_rate": 5e-4,
+        "architecture": "ernie-m-large",
+        "dataset": "UD",
+        "epochs": max_epoch,
+        }
+    )
 train_args = TrainingArguments(
     args.checkpoints_dir,
     learning_rate=args.learning_rate,
