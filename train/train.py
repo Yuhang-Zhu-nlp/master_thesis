@@ -60,7 +60,7 @@ train_args = TrainingArguments(
     overwrite_output_dir=True,
     weight_decay=args.weight_decay)
 
-dataset.set_tokenizer = tokenizer
+dataset.set_tokenizer(tokenizer)
 dataset_train = dataset(args.pos_path_train, args.neg_path_train)
 dataset_validation = dataset(args.pos_path_dev, args.neg_path_dev)
 print(model)

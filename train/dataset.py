@@ -29,7 +29,7 @@ class dataset(Dataset):
     dataset.tokenizer = tokenizer
 
   @staticmethod
-  def batch_collector_(batch: List[Tuple[Dict[str, str], int]]) -> BatchEncoding:
+  def batch_collector_(batch: List[Tuple[Dict[str, str], int]],) -> BatchEncoding:
     if dataset.tokenizer:
       sentences = dataset.tokenizer([data[0]['text'] for data in batch], return_tensors='pt',
                                      padding=True,truncation=True, max_length=250)
