@@ -15,6 +15,7 @@ class dataset(Dataset):
     self.data: List[Tuple[Dict[str, str], int]] = []
     for pos_d in data['pos']:
       self.data.append((pos_d, 1))
+    random.seed(20)
     for neg_d in random.sample(list(data['neg']), len(data['pos'])):
       self.data.append((neg_d, 0))
 
