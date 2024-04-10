@@ -3,10 +3,7 @@ import torch.nn as nn
 from typing import List, Tuple, Dict
 import random
 import json
-import argparse
-from .load_tokenizer import load_tokenizer_model
 from sklearn.metrics import precision_recall_fscore_support
-from transformers import AutoTokenizer, BertTokenizer
 
 
 def test(device=None,

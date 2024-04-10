@@ -1,7 +1,10 @@
 import sys
-sys.path.append('../')
+import os
+if not os.path.dirname(os.path.dirname(__file__)) in sys.path:
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import argparse
 import torch
+import wandb
 from libs.trainer import Trainer4classfier
 from libs.dataset import dataset
 from libs.load_tokenizer import load_tokenizer_model
@@ -30,9 +33,19 @@ parser.add_argument("--epoch", type=int, required=False, default=30, help="max e
 parser.add_argument("--warmup_steps", type=int, required=False, default=100, help="learning rate warm-up")
 parser.add_argument("--checkpoints_dir", type=str, required=True, help="path to store checkpoints")
 parser.add_argument("--output_dir", type=str, required=True, help="path to save model")
+parser.add_argument("--is_wandb", type=bool, required=True, help="whether store training in wandb")
 args = parser.parse_args()
 
 tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method)
+wandb.init(
+    project="master_thesis_johan",
+    config={
+    "learning_rate": 5e-4,
+    "architecture": "ernie-m-large",
+    "dataset": "UD",
+    "epochs": max_epoch,
+    }
+)
 train_args = TrainingArguments(
     args.checkpoints_dir,
     learning_rate=args.learning_rate,

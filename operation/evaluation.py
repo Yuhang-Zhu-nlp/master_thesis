@@ -1,5 +1,7 @@
 import sys
-sys.path.append('../')
+import os
+if not os.path.dirname(os.path.dirname(__file__)) in sys.path:
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import torch
 import argparse
 from libs.load_tokenizer import load_tokenizer_model
