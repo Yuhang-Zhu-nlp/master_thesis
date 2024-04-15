@@ -18,7 +18,7 @@ class Trainer4classfier(Trainer):
 
   @staticmethod
   def compute_metrics(pred: EvalPrediction) -> Dict[str, float]:
-    predictions = pred.predictions
+    predictions = nn.functional.sigmoid(torch.tensor(pred.predictions))
     labels = pred.label_ids
     predictions[predictions >= 0.5] = 1
     predictions[predictions < 0.5] = 0
