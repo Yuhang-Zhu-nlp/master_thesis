@@ -75,9 +75,9 @@ class classfier_module(nn.Module):
       # compute pooled representation by mean all token representations
       representation = self.__mean_pooling(bert_out.last_hidden_state[:, 1:-1], batch['attention_mask'][:, 2:])
     elif self.pool_method == 'layer_weight_sum_cls':
-      representation = self.__cls_weight_sum(bert_out.hidden_states, layer=self.layer)
+      representation = self.__cls_weight_sum(bert_out.hidden_states, layer=self.__layer)
     elif self.pool_method == 'layer_weight_sum_word':
-      representation = self.__word_weight_sum(bert_out.hidden_states, batch['attention_mask'], layer=self.layer)
+      representation = self.__word_weight_sum(bert_out.hidden_states, batch['attention_mask'], layer=self.__layer)
     else:
       raise ValueError(f'Unaccepted pooling method: {self.pool_method}')
     classifier_out = self.__classifier_head(representation).view(-1)
