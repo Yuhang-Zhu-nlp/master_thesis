@@ -3,9 +3,10 @@ from models.classifier_module import classfier_module
 import torch
 class erniem_pooling_representation(classfier_module):
   def __init__(self,
-               pool_method: str='mean') -> None:
+               pool_method: str='mean',
+               layer: int=0) -> None:
     bert = ErnieMModel.from_pretrained('susnato/ernie-m-large_pytorch')
-    super(erniem_pooling_representation, self).__init__(bert, 1024, 1, pool_method=pool_method)
+    super(erniem_pooling_representation, self).__init__(bert, 1024, 1, pool_method=pool_method, layer=layer)
 
   def forward(self,
               labels: torch.Tensor = [],
