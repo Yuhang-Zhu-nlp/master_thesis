@@ -34,6 +34,7 @@ pipeline.file_write_in(It_fut_neg_dev, f'{store_path}/it_dev_fut_neg.json', 'Ita
 pipeline.file_write_in(Sw_fut_pos_train, f'{store_path}/sw_train_fut_pos.json', 'Swedish', 'train')
 pipeline.file_write_in(Sw_fut_neg_train, f'{store_path}/sw_train_fut_neg.json', 'Swedish', 'train')
 '''
+'''
 It_cmp_pos_train = pipeline.extract('Italian', 'train', 'cmp', is_pos=True)
 pipeline.file_write_in(It_cmp_pos_train, f'{store_path}/it_train_cmp_pos.json', 'Italian', 'train')
 It_cmp_pos_dev = pipeline.extract('Italian', 'train', 'cmp', is_pos=True)
@@ -41,3 +42,16 @@ pipeline.file_write_in(It_cmp_pos_train, f'{store_path}/it_train_cmp_pos.json', 
 It_cmp_pos_train = pipeline.extract('Italian', 'train', 'cmp', is_pos=True)
 pipeline.file_write_in(It_cmp_pos_train, f'{store_path}/it_train_cmp_pos.json', 'Italian', 'train')
 print(len(It_cmp_pos_train))
+'''
+En_cmp_pos_train = pipeline.extract('English', 'train', 'cmp', is_pos=True)
+pipeline.file_write_in(En_cmp_pos_train, f'{store_path}/en_train_cmp_pos.json', 'English', 'train')
+En_cmp_pos_dev = pipeline.extract('English', 'dev', 'cmp', is_pos=True)
+pipeline.file_write_in(En_cmp_pos_dev, f'{store_path}/en_dev_cmp_pos.json', 'English', 'dev')
+En_cmp_pos_test = pipeline.extract('English', 'test', 'cmp', is_pos=True)
+pipeline.file_write_in(En_cmp_pos_test, f'{store_path}/en_test_cmp_pos.json', 'English', 'test')
+En_cmp_neg_train = pipeline.extract('English', 'train', 'cmp', is_pos=False)
+pipeline.file_write_in(En_cmp_neg_train, f'{store_path}/en_train_cmp_neg.json', 'English', 'train')
+En_cmp_neg_dev = pipeline.extract('English', 'dev', 'cmp', is_pos=False)
+pipeline.file_write_in(En_cmp_neg_dev, f'{store_path}/en_dev_cmp_neg.json', 'English', 'dev')
+En_cmp_neg_test = pipeline.extract('English', 'test', 'cmp', is_pos=False)
+pipeline.file_write_in(En_cmp_neg_test, f'{store_path}/en_test_cmp_neg.json', 'English', 'test')
