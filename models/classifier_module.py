@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from transformers import AdamW
 from typing import List, Tuple, Dict
 import re
 
@@ -97,3 +98,11 @@ class classfier_module(nn.Module):
         raise ValueError(f'Unaccepted pooling method: {self.pool_method}')
       representation = self.__classifier_head[0](representation)
     return representation
+
+  def get_optim(self, lr_g1, lr, wd):
+    param_groups = [
+        {'params': self.weight_para, 'lr': lr_g1},
+        {'params': self.__classifier_head.parameters()}
+    ]
+    k = AdamW(param_groups, lr=lr, weight_decay=wd)
+    return k
