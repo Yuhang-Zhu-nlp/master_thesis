@@ -48,25 +48,8 @@ if args.is_wandb:
         "epochs": args.epoch,
         }
     )
-if args.pool_method in ['layer_weight_sum_cls', 'layer_weight_sum_word'] and args.layer == 0:
-    train_args = TrainingArguments(
-        args.checkpoints_dir,
-        learning_rate=args.learning_rate,
-        logging_steps=1,
-        evaluation_strategy="epoch",
-        save_strategy="epoch",
-        per_device_train_batch_size=args.batch_size_train,
-        per_device_eval_batch_size=args.batch_size_valid,
-        num_train_epochs=args.epoch,
-        metric_for_best_model="eval_f1",
-        load_best_model_at_end=True,
-        warmup_steps=args.warmup_steps,
-        gradient_accumulation_steps=8,
-        overwrite_output_dir=True,
-        optimizers=(model.get_optim(0.001, args.learning_rate, args.weight_decay), None),
-        weight_decay=args.weight_decay)
-else:
-    train_args = TrainingArguments(
+
+train_args = TrainingArguments(
         args.checkpoints_dir,
         learning_rate=args.learning_rate,
         logging_steps=1,
@@ -89,13 +72,21 @@ print(model)
 print(f'size of training set: {len(dataset_train)}')
 print(f'size of validation set: {len(dataset_validation)}')
 
-trainer = Trainer4classfier(model=model,
+if args.pool_method in ['layer_weight_sum_cls', 'layer_weight_sum_word'] and args.layer==0:
+    trainer = Trainer4classfier(model=model,
+                            args=train_args,
+                            train_dataset=dataset_train,
+                            eval_dataset=dataset_validation,
+                            data_collator=dataset.batch_collector_,
+                            compute_metrics=Trainer4classfier.compute_metrics,
+                            optimizers=(model.optimizer(),None))
+else:
+    trainer = Trainer4classfier(model=model,
                             args=train_args,
                             train_dataset=dataset_train,
                             eval_dataset=dataset_validation,
                             data_collator=dataset.batch_collector_,
                             compute_metrics=Trainer4classfier.compute_metrics)
-
 trainer.train()
 if args.is_wandb:
     wandb.finish()
