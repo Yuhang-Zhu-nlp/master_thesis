@@ -35,7 +35,7 @@ parser.add_argument("--checkpoints_dir", type=str, required=True, help="path to 
 parser.add_argument("--output_dir", type=str, required=True, help="path to save model")
 parser.add_argument("--is_wandb", action="store_true", required=True, help="whether store training in wandb")
 parser.add_argument("--layer", type=int, required=False, default=0, help="path to save model")
-parser.add_argument("--name", type=int, required=False, default='', help="wandb run name")
+parser.add_argument("--name", type=str, required=False, default='', help="wandb run name")
 args = parser.parse_args()
 
 tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, args.layer)
