@@ -33,7 +33,7 @@ parser.add_argument("--epoch", type=int, required=False, default=30, help="max e
 parser.add_argument("--warmup_steps", type=int, required=False, default=100, help="learning rate warm-up")
 parser.add_argument("--checkpoints_dir", type=str, required=True, help="path to store checkpoints")
 parser.add_argument("--output_dir", type=str, required=True, help="path to save model")
-parser.add_argument("--is_wandb", action="store_true", required=True, help="whether store training in wandb")
+parser.add_argument("--is_wandb", action="store_true", required=False, help="whether store training in wandb")
 parser.add_argument("--layer", type=int, required=False, default=0, help="path to save model")
 parser.add_argument("--name", type=str, required=False, default='', help="wandb run name")
 args = parser.parse_args()
