@@ -36,6 +36,7 @@ parser.add_argument("--output_dir", type=str, required=True, help="path to save 
 parser.add_argument("--is_wandb", action="store_true", required=True, help="whether store training in wandb")
 parser.add_argument("--layer", type=int, required=False, default=0, help="path to save model")
 parser.add_argument("--name", type=str, required=False, default='', help="wandb run name")
+parser.add_argument("--wandb_dir", type=str, required=False, default='', help="path to store wandb log")
 args = parser.parse_args()
 
 tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, args.layer)
@@ -43,6 +44,7 @@ if args.is_wandb:
     wandb.init(
         name=args.name,
         project="master_thesis_johan",
+        dir=args.wandb_dir,
         config={
         "learning_rate": args.learning_rate,
         "architecture": args.model_name,
