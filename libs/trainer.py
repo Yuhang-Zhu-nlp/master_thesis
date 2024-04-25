@@ -10,7 +10,6 @@ class Trainer4classfier(Trainer):
                    model: nn.Module,
                    batch: BatchEncoding,
                    return_outputs: bool=False) -> Tuple[float, Dict[str, torch.Tensor]]:
-    print(model.device)
     loss_func = nn.BCEWithLogitsLoss(reduction="mean")
     labels = batch['labels']
     model_output = model(**batch)

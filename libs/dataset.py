@@ -25,9 +25,9 @@ class dataset(Dataset):
   def __getitem__(self, item: int) -> Tuple[Dict[str, str], int]:
     return self.data[item]
 
-  @staticmethod
-  def set_tokenizer(tokenizer) -> None:
-    dataset.tokenizer = tokenizer
+  @classmethod
+  def set_tokenizer(cls, tokenizer) -> None:
+    cls.tokenizer = tokenizer
 
   @staticmethod
   def batch_collector_(batch: List[Tuple[Dict[str, str], int]],) -> BatchEncoding:
