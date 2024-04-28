@@ -36,16 +36,20 @@ args = parser.parse_args()
 tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, args.layer)
 dataset.set_tokenizer(tokenizer)
 dataset_test = dataset(args.pos_path_test, args.neg_path_test)
+print(len(dataset_test))
 vector2position = tsne_visualizer(dimension=args.dimension,
                                   epoch=args.epoch,
                                   lr=args.learning_rate)
 representations, labels = get_representations(model, dataset_test)
 embeddings = vector2position.fit(representations.numpy())
+x_min, x_max = embeddings.min(0), embeddings.max(0)
+embeddings_n = (embeddings - x_min) / (x_max - x_min)
 plt.figure(figsize=(8, 8))
 for i in range(len(labels)):
-    plt.text(embeddings[i, 0],
-             embeddings[i, 1],
-             str(embeddings[i]))
+    plt.text(embeddings_n[i, 0],
+             embeddings_n[i, 1],
+             str(int(labels[i])), color='deepskyblue' if int(labels[i]) == 1 else 'red')
 plt.xticks([])
 plt.yticks([])
-plt.savefig(f'{args.out_dir}/layer{args.layer}.jpg')
+plt.show()
+#plt.savefig(f'{args.out_dir}/layer{args.layer}.jpg')

@@ -13,8 +13,6 @@ do
   python master_thesis/operation/train.py \
             --pos_path_test '/content/master_thesis/data/fr_train_fut_pos.json' \
             --neg_path_test '/content/master_thesis/data/fr_train_fut_neg.json' \
-            --pos_path_dev '/content/master_thesis/data/fr_dev_fut_pos.json' \
-            --neg_path_dev '/content/master_thesis/data/fr_dev_fut_neg.json' \
             --model_name 'xlm-roberta' \
             --pool_method 'layer_weight_sum_word' \
             --learning_rate 300 \

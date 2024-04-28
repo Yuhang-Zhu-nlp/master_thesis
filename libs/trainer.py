@@ -24,7 +24,7 @@ class Trainer4classfier(Trainer):
     predictions[predictions < 0.5] = 0
     prec, rec, f1, _ = precision_recall_fscore_support(labels, predictions, average='binary')
     return {
-        'f1' : f1,
+        'f1': f1,
         'precision': prec,
         'recall': rec
     }

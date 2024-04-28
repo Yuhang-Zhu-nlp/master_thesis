@@ -26,4 +26,4 @@ def get_representations(
             ).cpu()
             labels.extend(inputs['labels'].tolist())
             re_tensors.append(representation)
-    return torch.stack(re_tensors, dim=0), labels
+    return torch.cat(re_tensors, dim=0), labels

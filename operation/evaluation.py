@@ -23,8 +23,9 @@ parser.add_argument("--pool_method",
                     choices=['mean', 'layer_weight_sum_cls', 'layer_weight_sum_word'],
                     help="select pool method")
 parser.add_argument("--model_path", type=str, required=True, help="the path that you store the model")
+parser.add_argument("--layer", type=int, required=False, default=0, help="use which layer of the model")
 args = parser.parse_args()
-tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method)
+tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, args.layer)
 model.load_state_dict(torch.load(args.model_path))
 test_config = {
     'dataset_path_pos': args.pos_path_test,
@@ -34,4 +35,4 @@ test_config = {
     'device': device
 }
 result = test_pipeline(test_config)
-print()
+print(result)
