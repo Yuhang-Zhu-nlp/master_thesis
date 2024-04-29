@@ -14,9 +14,9 @@ class classfier_module(nn.Module):
                layer: int=0) -> None:
     super(classfier_module, self).__init__()
     if pool_method == 'layer_weight_sum_cls':
-      self.weight_para = nn.Parameter(torch.randn(1, 24))
+      self.weight_para = nn.Parameter(torch.ones(1, 24)/24)
     elif pool_method == 'layer_weight_sum_word':
-      self.weight_para = nn.Parameter(torch.randn(1, 1, 24))
+      self.weight_para = nn.Parameter(torch.ones(1, 1, 24)/24)
     self.__bert = bert
     self.__layer = layer
     self.pool_method = pool_method

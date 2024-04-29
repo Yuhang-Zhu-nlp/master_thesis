@@ -8,13 +8,13 @@ if not os.path.dirname(os.path.dirname(__file__)) in sys.path:
 import argparse
 import numpy as np
 from libs.load_tokenizer import load_tokenizer_model
-from libs.dataset import dataset
+from libs.dataset_vis import dataset
 from libs.t_sne import tsne_visualizer
 from libs.opt_representations import get_representations
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--pos_path_test", type=str, required=True, help="test set for positive instances")
-parser.add_argument("--neg_path_test", type=str, required=True, help="test set for negative instances")
+parser.add_argument('--pos_path_test', nargs='+', help='test set for positive instances', required=True)
+parser.add_argument('--neg_path_test', nargs='+', help='test set for negative instances', required=True)
 parser.add_argument("--model_name",
                     type=str,
                     required=True,
@@ -46,10 +46,8 @@ x_min, x_max = embeddings.min(0), embeddings.max(0)
 embeddings_n = (embeddings - x_min) / (x_max - x_min)
 plt.figure(figsize=(8, 8))
 for i in range(len(labels)):
-    plt.text(embeddings_n[i, 0],
-             embeddings_n[i, 1],
-             str(int(labels[i])), color='deepskyblue' if int(labels[i]) == 1 else 'red')
+    plt.scatter(embeddings_n[i, 0],
+             embeddings_n[i, 1], color=plt.cm.Spectral(int(labels[i])*30))
 plt.xticks([])
 plt.yticks([])
-plt.show()
-#plt.savefig(f'{args.out_dir}/layer{args.layer}.jpg')
+plt.savefig(f'{args.out_dir}/layer{args.layer}.jpg')

@@ -71,7 +71,7 @@ pipeline.file_write_in(Fr_cmp_neg_dev, f'{store_path}/fr_dev_cmp_neg.json', 'Fre
 Fr_cmp_neg_test = pipeline.extract('French', 'test', 'cmp', is_pos=False)
 pipeline.file_write_in(Fr_cmp_neg_test, f'{store_path}/fr_test_cmp_neg.json', 'French', 'test')
 '''
-
+'''
 En_have_pos_train = pipeline.extract('Finnish', 'train', 'have', is_pos=True)
 pipeline.file_write_in(En_have_pos_train, f'{store_path}/fi_train_have_pos.json', 'Finnish', 'train')
 En_have_pos_dev = pipeline.extract('Finnish', 'dev', 'have', is_pos=True)
@@ -85,3 +85,14 @@ pipeline.file_write_in(En_have_neg_dev, f'{store_path}/fi_dev_have_neg.json', 'F
 En_have_neg_test = pipeline.extract('Finnish', 'test', 'have', is_pos=False)
 pipeline.file_write_in(En_have_neg_test, f'{store_path}/fi_test_have_neg.json', 'Finnish', 'test')
 print(len(En_have_pos_train))
+'''
+'''
+Sw_fut_neg_train = pipeline.extract('Swedish', 'train', 'cmp', is_pos=False)
+Sw_fut_pos_train = pipeline.extract('Swedish', 'train', 'cmp', is_pos=True)
+pipeline.file_write_in(Sw_fut_pos_train, f'{store_path}/sw_train_cmp_pos.json', 'Swedish', 'train')
+pipeline.file_write_in(Sw_fut_neg_train, f'{store_path}/sw_train_cmp_neg.json', 'Swedish', 'train')
+'''
+Zh_fut_neg_test = pipeline.extract('Chinese', 'test', 'have', is_pos=False)
+Zh_fut_pos_test = pipeline.extract('Chinese', 'test', 'have', is_pos=True)
+pipeline.file_write_in(Zh_fut_pos_test, f'{store_path}/zh_test_have_pos.json', 'Chinese', 'test')
+pipeline.file_write_in(Zh_fut_neg_test, f'{store_path}/zh_test_have_neg.json', 'Chinese', 'test')
