@@ -6,7 +6,7 @@ import torch
 from transformers.tokenization_utils_base import BatchEncoding
 
 sentence_max_length = 250
-class dataset(Dataset):
+class dataset_l(Dataset):
 
   tokenizer = None
   counter = 0
@@ -21,12 +21,12 @@ class dataset(Dataset):
   def set_data(self, pos_path: str, neg_path: str):
     data = load_dataset('json', data_files={'pos': pos_path, 'neg': neg_path})
     for pos_d in data['pos']:
-        self.data.append((pos_d, dataset.counter))
+        self.data.append((pos_d, dataset_l.counter))
     random.seed(20)
-    dataset.counter+=1
+    dataset_l.counter+=1
     for neg_d in random.sample(list(data['neg']), len(data['pos'])):
-        self.data.append((neg_d, dataset.counter))
-    dataset.counter+=1
+        self.data.append((neg_d, dataset_l.counter))
+    dataset_l.counter+=1
   def __len__(self) -> int:
     return len(self.data)
 
@@ -39,10 +39,10 @@ class dataset(Dataset):
 
   @staticmethod
   def batch_collector_(batch: List[Tuple[Dict[str, str], int]],) -> BatchEncoding:
-    if dataset.tokenizer:
-      sentences = dataset.tokenizer([data[0]['text'] for data in batch], return_tensors='pt',
+    if dataset_l.tokenizer:
+      sentences = dataset_l.tokenizer([data[0]['text'] for data in batch], return_tensors='pt',
                                      padding=True,truncation=True, max_length=250)
       sentences['labels'] = torch.tensor([data[1] for data in batch], dtype=torch.float)
       return sentences
     else:
-      raise ValueError('please set tokenizer using dataset.set_tokenizer')
+      raise ValueError('please set tokenizer using dataset_l.set_tokenizer')

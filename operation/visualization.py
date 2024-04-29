@@ -8,7 +8,7 @@ if not os.path.dirname(os.path.dirname(__file__)) in sys.path:
 import argparse
 import numpy as np
 from libs.load_tokenizer import load_tokenizer_model
-from libs.dataset_vis import dataset
+from libs.dataset_vis import dataset_l
 from libs.t_sne import tsne_visualizer
 from libs.opt_representations import get_representations
 
@@ -34,8 +34,9 @@ parser.add_argument("--learning_rate", type=float, required=False, default=10, h
 args = parser.parse_args()
 
 tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, args.layer)
-dataset.set_tokenizer(tokenizer)
-dataset_test = dataset(args.pos_path_test, args.neg_path_test)
+print(tokenizer)
+dataset_test = dataset_l(args.pos_path_test, args.neg_path_test)
+dataset_l.set_tokenizer(tokenizer)
 print(len(dataset_test))
 vector2position = tsne_visualizer(dimension=args.dimension,
                                   epoch=args.epoch,
