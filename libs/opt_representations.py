@@ -1,5 +1,5 @@
 from models.classifier_module import classfier_module
-from libs.dataset import dataset
+from libs.dataset_vis import dataset_l
 from torch.utils.data import Dataset, DataLoader
 import torch
 from typing import Tuple
@@ -15,7 +15,7 @@ def get_representations(
     dataloader = DataLoader(data,
                             batch_size=32,
                             num_workers=0,
-                            collate_fn = dataset.batch_collector_)
+                            collate_fn = dataset_l.batch_collector_)
     re_tensors = []
     labels = []
     with tqdm(dataloader, total=len(data)//32) as batches:

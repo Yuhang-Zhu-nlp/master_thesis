@@ -11,21 +11,17 @@ class dataset_l(Dataset):
   tokenizer = None
   counter = 0
 
-  def __init__(self, pos_path: str, neg_path: str) -> None:
+  def __init__(self, pos_path: str) -> None:
     self.data: List[Tuple[Dict[str, str], int]] = []
     if isinstance(pos_path, list):
-        assert len(pos_path)==len(neg_path)
         for i in range(len(pos_path)):
-            self.set_data(pos_path[i], neg_path[i])
+            self.set_data(pos_path[i])
 
-  def set_data(self, pos_path: str, neg_path: str):
+  def set_data(self, pos_path: str):
     data = load_dataset('json', data_files={'pos': pos_path, 'neg': neg_path})
     for pos_d in data['pos']:
         self.data.append((pos_d, dataset_l.counter))
     random.seed(20)
-    dataset_l.counter+=1
-    for neg_d in random.sample(list(data['neg']), len(data['pos'])):
-        self.data.append((neg_d, dataset_l.counter))
     dataset_l.counter+=1
   def __len__(self) -> int:
     return len(self.data)
