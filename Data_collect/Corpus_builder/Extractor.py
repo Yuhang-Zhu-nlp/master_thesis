@@ -169,7 +169,7 @@ def extract_comparison(corpus: CorpusLoader,
         raise ValueError(f'unaccepted language: {language}')
     return re_id_lst if mode == 'pos' else re_id_lst_negative
 
-def extract_comparison_fr_vis(position: str, sentence: dict) -> bool:
+def extract_comparison_fr_vis(position: str, sentence: dict, language='French') -> bool:
     adj_position = re.match(r'([0-9]+)' + ':' + 'advmod', sentence['tree_lst'][int(position)-1])
     if (adj_position and sentence['pos_tag'][int(position)-1] == 'ADV' and
             sentence['pos_tag'][int(adj_position.group(1)) - 1] == 'ADJ'):
@@ -184,7 +184,7 @@ def extract_comparison_fr_vis(position: str, sentence: dict) -> bool:
                     return False
     else:
         return False
-    return 'plus ' + (sentence['lemma_lst'][int(adj_position.group(1)) - 1] if '_' != sentence['lemma_lst'][int(adj_position.group(1)) - 1] else sentence['token_lst'][int(adj_position.group(1)) - 1][1])
+    return ('plus ' if language == 'French' else 'più ') + (sentence['lemma_lst'][int(adj_position.group(1)) - 1] if '_' != sentence['lemma_lst'][int(adj_position.group(1)) - 1] else sentence['token_lst'][int(adj_position.group(1)) - 1][1])
 
 def extract_comparison_vis(corpus: CorpusLoader,
                        trigger: str,
@@ -200,7 +200,7 @@ def extract_comparison_vis(corpus: CorpusLoader,
         for sentence in corpus:
             position_possible_tri = extract_trigger(sentence['token_lst'], [trigger])
             for position in position_possible_tri:
-                e_token = extract_comparison_fr_vis(position, sentence)
+                e_token = extract_comparison_fr_vis(position, sentence, language)
                 if e_token and not e_token.lower() in re_lst:
                     re_lst.append(e_token.lower())
     else:
