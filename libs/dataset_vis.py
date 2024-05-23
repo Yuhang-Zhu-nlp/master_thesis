@@ -18,7 +18,7 @@ class dataset_l(Dataset):
             self.set_data(pos_path[i])
 
   def set_data(self, pos_path: str):
-    data = load_dataset('json', data_files={'pos': pos_path, 'neg': neg_path})
+    data = load_dataset('json', data_files={'pos': pos_path})
     for pos_d in data['pos']:
         self.data.append((pos_d, dataset_l.counter))
     random.seed(20)
