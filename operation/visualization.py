@@ -81,8 +81,8 @@ else:
         label_a_e[l] = label_a_e.get(l,[])
         label_a_e[l].append((embeddings_n[i, 0],
                              embeddings_n[i, 1]))
-      i = index%4
-      j = index//4
+      i = index//6
+      j = index%6
       for l in label_a_e:
         p_X, p_Y = zip(*label_a_e[l])
         ax[i, j].scatter(list(p_X),
