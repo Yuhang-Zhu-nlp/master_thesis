@@ -65,7 +65,7 @@ if args.dimension == 3:
                               list(p_Y),list(p_Z), s=5, color=plt.cm.Spectral(int(l) * 30), label=args.labels[int(l)])
         sca, leg = ax[index].get_legend_handles_labels()
     fig.legend(sca, leg, loc='right')
-    plt.savefig(f'{args.out_dir}/layer.jpg')
+    plt.savefig(f'{args.out_dir}/layer{args.dimension}.jpg')
 else:
     fig, ax = plt.subplots(2, 4, sharex='col', sharey='row')
     for index, layer in enumerate([1,2,8,9,12,13,23,24]):

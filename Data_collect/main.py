@@ -98,5 +98,5 @@ Zh_fut_pos_test = pipeline.extract('Chinese', 'test', 'have', is_pos=True)
 pipeline.file_write_in(Zh_fut_pos_test, f'{store_path}/zh_test_have_pos.json', 'Chinese', 'test')
 pipeline.file_write_in(Zh_fut_neg_test, f'{store_path}/zh_test_have_neg.json', 'Chinese', 'test')
 '''
-e = pipeline.extract4vis('Italian', 'test')
+e = pipeline.extract4vis('Italian', 'train')
 pipeline.file_write_in4vis(e, f'{store_path}/it_test_cmp_vis.json',)
