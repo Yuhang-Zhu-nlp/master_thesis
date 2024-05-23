@@ -13,7 +13,7 @@ def is_accept_have(position: int,
                    possessee: str,
                    language: str = '') -> bool:
     counter = [1, 1]
-    if language in ['English', 'Chinese']:
+    if language in ['English', 'Chinese','Swedish']:
         for ele in sentence['tree_lst']:
             if re.match(r'[^0-9]*' + str(position) + ':' + possessor, ele):
                 counter[0] -= 1
@@ -194,13 +194,15 @@ def extract_comparison_vis(corpus: CorpusLoader,
         for sentence in corpus:
             for position, token in sentence['token_lst']:
                 if token.endswith(trigger) and 'Degree=Cmp' in sentence['label_lst'][int(position) - 1] and 'ADJ' in sentence['pos_tag'][int(position) - 1]:
-                    re_lst.append(token)
+                    if not token.lower() in re_lst:
+                        re_lst.append(token.lower())
     elif language in ['French', 'Italian']:
         for sentence in corpus:
             position_possible_tri = extract_trigger(sentence['token_lst'], [trigger])
             for position in position_possible_tri:
-                if extract_comparison_fr_vis(position, sentence):
-                    re_lst.append(extract_comparison_fr_vis(position, sentence))
+                e_token = extract_comparison_fr_vis(position, sentence)
+                if e_token and not e_token.lower() in re_lst:
+                    re_lst.append(e_token.lower())
     else:
         raise ValueError(f'unaccepted language: {language}')
     return re_lst

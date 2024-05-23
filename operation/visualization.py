@@ -57,7 +57,8 @@ if args.dimension == 3:
         for i, l in enumerate(labels):
             label_a_e[l] = label_a_e.get(l, [])
             label_a_e[l].append((embeddings_n[i, 0],
-                                 embeddings_n[i, 1]))
+                                 embeddings_n[i, 1],
+                                 embeddings_n[i, 2]))
         for l in label_a_e:
             p_X, p_Y, p_Z = zip(*label_a_e[l])
             ax[index].scatter(list(p_X),
