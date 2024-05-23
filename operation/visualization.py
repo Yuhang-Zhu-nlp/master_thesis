@@ -62,10 +62,10 @@ if args.dimension == 3:
         for l in label_a_e:
             p_X, p_Y, p_Z = zip(*label_a_e[l])
             ax[index].scatter(list(p_X),
-                              list(p_Y),list(p_Z), s=5, color=plt.cm.Spectral(int(l) * 30), label=args.labels[int(l)])
+                              list(p_Y),list(p_Z), s=2, color=plt.cm.Spectral(int(l) * 30), label=args.labels[int(l)])
         sca, leg = ax[index].get_legend_handles_labels()
     fig.legend(sca, leg, loc='right')
-    plt.savefig(f'{args.out_dir}/layer{args.dimension}.jpg')
+    plt.savefig(f'{args.out_dir}/layer{args.dimension}.jpg', dpi=600)
 else:
     fig, ax = plt.subplots(4, 6, sharex='col', sharey='row')
     for index, layer in enumerate(range(1,25)):
@@ -86,7 +86,7 @@ else:
       for l in label_a_e:
         p_X, p_Y = zip(*label_a_e[l])
         ax[i, j].scatter(list(p_X),
-                 list(p_Y), color=plt.cm.Spectral(int(l)*30), s=5, label = args.labels[int(l)])
+                 list(p_Y), color=plt.cm.Spectral(int(l)*30), s=2, label = args.labels[int(l)])
       sca, leg = ax[i, j].get_legend_handles_labels()
     fig.legend(sca, leg, loc='right')
-    plt.savefig(f'{args.out_dir}/layer{args.dimension}.jpg')
+    plt.savefig(f'{args.out_dir}/layer{args.dimension}.jpg', dpi=600)
