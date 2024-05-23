@@ -31,6 +31,7 @@ parser.add_argument("-d", "--dimension", type=int, required=False, default=0, he
 parser.add_argument("--model_path", type=str, required=True, help="path to stored model")
 parser.add_argument("--out_dir", type=str, required=True, help="path to stored results")
 parser.add_argument("--epoch", type=int, required=False, default=1, help="max epoch")
+parser.add_argument("--perplexity", type=int, required=False, default=30, help="perplexity of t-sne")
 parser.add_argument("--learning_rate", type=float, required=False, default=10, help="hyperparameter set-up: learning rate")
 args = parser.parse_args()
 
@@ -38,7 +39,8 @@ dataset_test = dataset_l(args.pos_path_test)
 print(len(dataset_test))
 vector2position = tsne_visualizer(dimension=args.dimension,
                                   epoch=args.epoch,
-                                  lr=args.learning_rate)
+                                  lr=args.learning_rate,
+                                  per=args.perplexity)
 fig, ax = plt.subplots(2, 4, sharex='col', sharey='row')
 for index, layer in enumerate([1,2,8,9,12,13,23,24]):
   tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, layer)
