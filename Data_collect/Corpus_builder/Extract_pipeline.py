@@ -1,7 +1,8 @@
 from .Loader import CorpusLoader
 from .Extractor import (extract_sentence_have,
                         tense_extractor_future,
-                        extract_comparison)
+                        extract_comparison,
+                        extract_comparison_vis)
 import json
 
 
@@ -35,6 +36,19 @@ class ExtractPipeline:
             for mode in ['train', 'dev', 'test']:
                 self.__langmode2id[f'{language}_{mode}'] = counter
                 counter += 1
+
+    def extract4vis(self, language: str, mode: str):
+        corpus = self.copora[self.__langmode2id[f'{language}_{mode}']]
+        if language == 'English':
+            trigger = 'er'
+        elif language == 'Swedish':
+            trigger = 're'
+        elif language == 'Italian':
+            trigger = 'più'
+        else:
+            trigger = 'plus'
+        return extract_comparison_vis(corpus, trigger,
+                                  language=language)
 
     def extract(self, language: str, mode: str, type: str, is_pos: bool = True) -> list:
         assert type in ['cmp', 'have', 'future']
@@ -102,6 +116,13 @@ class ExtractPipeline:
         else:
             corpus = self.copora[self.__langmode2id[f'{language}_{mode}']]
             str_lst = [corpus[id]['text'] for id in id_list]
+            with open(path, 'w', encoding='utf-8') as fp:
+                json.dump(str_lst, fp, ensure_ascii=False)
+
+    def file_write_in4vis(self, str_lst: list, path: str):
+        if not path.endswith('json'):
+            raise ValueError('path should link to a json file')
+        else:
             with open(path, 'w', encoding='utf-8') as fp:
                 json.dump(str_lst, fp, ensure_ascii=False)
 

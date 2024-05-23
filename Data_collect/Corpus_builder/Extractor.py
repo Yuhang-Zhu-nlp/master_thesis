@@ -168,3 +168,39 @@ def extract_comparison(corpus: CorpusLoader,
     else:
         raise ValueError(f'unaccepted language: {language}')
     return re_id_lst if mode == 'pos' else re_id_lst_negative
+
+def extract_comparison_fr_vis(position: str, sentence: dict) -> bool:
+    adj_position = re.match(r'([0-9]+)' + ':' + 'advmod', sentence['tree_lst'][int(position)-1])
+    if (adj_position and sentence['pos_tag'][int(position)-1] == 'ADV' and
+            sentence['pos_tag'][int(adj_position.group(1)) - 1] == 'ADJ'):
+        noun_position = re.match(r'([0-9]+)' + ':' +
+                                 'amod', sentence['tree_lst'][int(adj_position.group(1))-1])
+        for i, lemma in enumerate(sentence['lemma_lst']):
+            if lemma in ['il', 'le'] and sentence['pos_tag'][i] == 'DET':
+                det_position = re.match(r'([0-9]+)' + ':' + 'det', sentence['tree_lst'][i])
+                if det_position and (int(det_position.group(1)) == position or det_position.group(1) == adj_position.group(1)):
+                    return False
+                elif det_position and noun_position and det_position.group(1) == noun_position.group(1):
+                    return False
+    else:
+        return False
+    return 'plus ' + (sentence['lemma_lst'][int(adj_position.group(1)) - 1] if '_' != sentence['lemma_lst'][int(adj_position.group(1)) - 1] else sentence['token_lst'][int(adj_position.group(1)) - 1][1])
+
+def extract_comparison_vis(corpus: CorpusLoader,
+                       trigger: str,
+                       language: str = '') -> list:
+    re_lst = []
+    if language in ['English', 'Swedish']:
+        for sentence in corpus:
+            for position, token in sentence['token_lst']:
+                if token.endswith(trigger) and 'Degree=Cmp' in sentence['label_lst'][int(position) - 1] and 'ADJ' in sentence['pos_tag'][int(position) - 1]:
+                    re_lst.append(token)
+    elif language in ['French', 'Italian']:
+        for sentence in corpus:
+            position_possible_tri = extract_trigger(sentence['token_lst'], [trigger])
+            for position in position_possible_tri:
+                if extract_comparison_fr_vis(position, sentence):
+                    re_lst.append(extract_comparison_fr_vis(position, sentence))
+    else:
+        raise ValueError(f'unaccepted language: {language}')
+    return re_lst

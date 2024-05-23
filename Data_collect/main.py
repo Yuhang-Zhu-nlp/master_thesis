@@ -92,7 +92,11 @@ Sw_fut_pos_train = pipeline.extract('Swedish', 'train', 'cmp', is_pos=True)
 pipeline.file_write_in(Sw_fut_pos_train, f'{store_path}/sw_train_cmp_pos.json', 'Swedish', 'train')
 pipeline.file_write_in(Sw_fut_neg_train, f'{store_path}/sw_train_cmp_neg.json', 'Swedish', 'train')
 '''
+'''
 Zh_fut_neg_test = pipeline.extract('Chinese', 'test', 'have', is_pos=False)
 Zh_fut_pos_test = pipeline.extract('Chinese', 'test', 'have', is_pos=True)
 pipeline.file_write_in(Zh_fut_pos_test, f'{store_path}/zh_test_have_pos.json', 'Chinese', 'test')
 pipeline.file_write_in(Zh_fut_neg_test, f'{store_path}/zh_test_have_neg.json', 'Chinese', 'test')
+'''
+e = pipeline.extract4vis('Swedish', 'test')
+pipeline.file_write_in4vis(e, f'{store_path}/sw_test_cmp_vis.json',)
