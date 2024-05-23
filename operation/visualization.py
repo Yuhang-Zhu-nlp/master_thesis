@@ -41,26 +41,51 @@ vector2position = tsne_visualizer(dimension=args.dimension,
                                   epoch=args.epoch,
                                   lr=args.learning_rate,
                                   per=args.perplexity)
-fig, ax = plt.subplots(2, 4, sharex='col', sharey='row')
-for index, layer in enumerate([1,2,8,9,12,13,23,24]):
-  tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, layer)
-  model.load_state_dict(torch.load(f'{args.model_path}{layer}.pt'))
-  dataset_l.set_tokenizer(tokenizer)
-  representations, labels = get_representations(model, dataset_test)
-  embeddings = vector2position.fit(representations.numpy())
-  x_min, x_max = embeddings.min(0), embeddings.max(0)
-  embeddings_n = (embeddings - x_min) / (x_max - x_min)
-  label_a_e = {}
-  for i, l in enumerate(labels):
-    label_a_e[l] = label_a_e.get(l,[])
-    label_a_e[l].append((embeddings_n[i, 0],
-                         embeddings_n[i, 1]))
-  i = 0 if layer < 10 else 1
-  j = index%4
-  for l in label_a_e:
-    p_X, p_Y = zip(*label_a_e[l])
-    ax[i, j].scatter(list(p_X),
-             list(p_Y), color=plt.cm.Spectral(int(l)*30), label = args.labels[int(l)])
-  sca, leg = ax[i, j].get_legend_handles_labels()
-fig.legend(sca, leg, loc='right')
-plt.savefig(f'{args.out_dir}/layer.jpg')
+if args.dimension == 3:
+    fig = plt.figure(figsize=(10, 5))
+    ax = []
+    for index, layer in enumerate([1, 2, 8, 9, 12, 13, 23, 24]):
+        ax.append(fig.add_subplot(240 + index + 1, projection='3d'))
+        tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, layer)
+        model.load_state_dict(torch.load(f'{args.model_path}{layer}.pt'))
+        dataset_l.set_tokenizer(tokenizer)
+        representations, labels = get_representations(model, dataset_test)
+        embeddings = vector2position.fit(representations.numpy())
+        x_min, x_max = embeddings.min(0), embeddings.max(0)
+        embeddings_n = (embeddings - x_min) / (x_max - x_min)
+        label_a_e = {}
+        for i, l in enumerate(labels):
+            label_a_e[l] = label_a_e.get(l, [])
+            label_a_e[l].append((embeddings_n[i, 0],
+                                 embeddings_n[i, 1]))
+        for l in label_a_e:
+            p_X, p_Y = zip(*label_a_e[l])
+            ax[index].scatter(list(p_X),
+                              list(p_Y), color=plt.cm.Spectral(int(l) * 30), label=args.labels[int(l)])
+        sca, leg = ax[index].get_legend_handles_labels()
+    fig.legend(sca, leg, loc='right')
+    plt.savefig(f'{args.out_dir}/layer.jpg')
+else:
+    fig, ax = plt.subplots(2, 4, sharex='col', sharey='row')
+    for index, layer in enumerate([1,2,8,9,12,13,23,24]):
+      tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, layer)
+      model.load_state_dict(torch.load(f'{args.model_path}{layer}.pt'))
+      dataset_l.set_tokenizer(tokenizer)
+      representations, labels = get_representations(model, dataset_test)
+      embeddings = vector2position.fit(representations.numpy())
+      x_min, x_max = embeddings.min(0), embeddings.max(0)
+      embeddings_n = (embeddings - x_min) / (x_max - x_min)
+      label_a_e = {}
+      for i, l in enumerate(labels):
+        label_a_e[l] = label_a_e.get(l,[])
+        label_a_e[l].append((embeddings_n[i, 0],
+                             embeddings_n[i, 1]))
+      i = 0 if layer < 10 else 1
+      j = index%4
+      for l in label_a_e:
+        p_X, p_Y = zip(*label_a_e[l])
+        ax[i, j].scatter(list(p_X),
+                 list(p_Y), color=plt.cm.Spectral(int(l)*30), label = args.labels[int(l)])
+      sca, leg = ax[i, j].get_legend_handles_labels()
+    fig.legend(sca, leg, loc='right')
+    plt.savefig(f'{args.out_dir}/layer.jpg')
