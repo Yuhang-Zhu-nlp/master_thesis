@@ -44,8 +44,8 @@ vector2position = tsne_visualizer(dimension=args.dimension,
 if args.dimension == 3:
     fig = plt.figure(figsize=(10, 5))
     ax = []
-    for index, layer in enumerate([1, 2, 8, 9, 12, 13, 23, 24]):
-        ax.append(fig.add_subplot(240 + index + 1, projection='3d'))
+    for index, layer in enumerate(range(1,25)):
+        ax.append(fig.add_subplot(460 + index + 1, projection='3d'))
         tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, layer)
         model.load_state_dict(torch.load(f'{args.model_path}{layer}.pt'))
         dataset_l.set_tokenizer(tokenizer)
@@ -67,8 +67,8 @@ if args.dimension == 3:
     fig.legend(sca, leg, loc='right')
     plt.savefig(f'{args.out_dir}/layer{args.dimension}.jpg')
 else:
-    fig, ax = plt.subplots(2, 4, sharex='col', sharey='row')
-    for index, layer in enumerate([1,2,8,9,12,13,23,24]):
+    fig, ax = plt.subplots(4, 6, sharex='col', sharey='row')
+    for index, layer in enumerate(range(1,25)):
       tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, layer)
       model.load_state_dict(torch.load(f'{args.model_path}{layer}.pt'))
       dataset_l.set_tokenizer(tokenizer)
@@ -81,8 +81,8 @@ else:
         label_a_e[l] = label_a_e.get(l,[])
         label_a_e[l].append((embeddings_n[i, 0],
                              embeddings_n[i, 1]))
-      i = 0 if layer < 10 else 1
-      j = index%4
+      i = index%4
+      j = index//4
       for l in label_a_e:
         p_X, p_Y = zip(*label_a_e[l])
         ax[i, j].scatter(list(p_X),
