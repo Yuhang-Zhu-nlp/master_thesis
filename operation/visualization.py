@@ -45,7 +45,9 @@ if args.dimension == 3:
     fig = plt.figure(figsize=(10, 5))
     ax = []
     for index, layer in enumerate(range(1,25)):
-        ax.append(fig.add_subplot(460 + index + 1, projection='3d'))
+        i = index // 6
+        j = index % 6
+        ax.append(fig.add_subplot(4, 6, (i, j), projection='3d'))
         tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, layer)
         model.load_state_dict(torch.load(f'{args.model_path}{layer}.pt'))
         dataset_l.set_tokenizer(tokenizer)
