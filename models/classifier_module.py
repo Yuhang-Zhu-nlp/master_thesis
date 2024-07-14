@@ -17,6 +17,8 @@ class classfier_module(nn.Module):
       self.weight_para = nn.Parameter(torch.ones(1, 24)/24)
     elif pool_method == 'layer_weight_sum_word':
       self.weight_para = nn.Parameter(torch.ones(1, 1, 24)/24)
+      self.weight_norm = nn.Softmax(dim=2)
+      self.scalar = nn.Parameter(torch.tensor([1]))
     self.__bert = bert
     self.__layer = layer
     self.pool_method = pool_method
@@ -63,7 +65,7 @@ class classfier_module(nn.Module):
     for layer in BERT_out_layers:
       tensors.append(self.__mean_pooling(layer[:, 1:-1], attention_mask[:, 2:]))
     stacked_tensor = torch.stack(tensors[1:], dim=0)
-    weighted_tensor = self.weight_para.T.mul(stacked_tensor)
+    weighted_tensor = (self.scalar*(self.weight_norm(self.weight_para))).T.mul(stacked_tensor)
     return torch.sum(weighted_tensor, dim=0)
 
   def forward(self,
