@@ -18,7 +18,7 @@ class classfier_module(nn.Module):
     elif pool_method == 'layer_weight_sum_word':
       self.weight_para = nn.Parameter(torch.ones(1, 1, 24)/24)
       self.weight_norm = nn.Softmax(dim=2)
-      self.scalar = nn.Parameter(torch.tensor([1]))
+      self.scalar = nn.Parameter(torch.tensor([1], dtype=torch.float32))
     self.__bert = bert
     self.__layer = layer
     self.pool_method = pool_method
@@ -27,6 +27,7 @@ class classfier_module(nn.Module):
       para.requires_grad = False
     self.__classifier_head = nn.Sequential(
         nn.Linear(hidden_size, hidden_size*2),
+        nn.Tanh(),
         nn.Linear(hidden_size*2, label_size)
     )
 

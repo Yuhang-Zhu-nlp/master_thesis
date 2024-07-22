@@ -4,7 +4,6 @@ if not os.path.dirname(os.path.dirname(__file__)) in sys.path:
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import argparse
 import torch
-import wandb
 from libs.trainer import Trainer4classfier
 from libs.dataset import dataset
 from libs.load_tokenizer import load_tokenizer_model
@@ -40,6 +39,7 @@ args = parser.parse_args()
 
 tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, args.layer)
 if args.is_wandb:
+    import wandb
     wandb.init(
         name=args.name,
         project="master_thesis_johan",

@@ -3,6 +3,7 @@ import os
 if not os.path.dirname(os.path.dirname(__file__)) in sys.path:
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import torch
+import torch.nn as nn
 import argparse
 from libs.load_tokenizer import load_tokenizer_model
 
@@ -21,4 +22,5 @@ parser.add_argument("--model_path", type=str, required=True, help="the path that
 args = parser.parse_args()
 tokenizer, model = load_tokenizer_model(args.model_name, args.pool_method, 0)
 model.load_state_dict(torch.load(args.model_path))
-print(model.weight_para)
+softmax = nn.Softmax(dim=2)
+print(softmax(model.weight_para).squeeze())
