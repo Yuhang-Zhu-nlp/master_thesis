@@ -81,7 +81,7 @@ if args.pool_method in ['layer_weight_sum_cls', 'layer_weight_sum_word'] and arg
                             eval_dataset=dataset_validation,
                             data_collator=dataset.batch_collector_,
                             compute_metrics=Trainer4classfier.compute_metrics,
-                            optimizers=(model.get_optim(0.001, args.learning_rate, args.weight_decay),None))
+                            optimizers=(model.get_optim(0.01, args.learning_rate, args.weight_decay),None))
 else:
     trainer = Trainer4classfier(model=model,
                             args=train_args,
