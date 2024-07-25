@@ -16,7 +16,7 @@ class classfier_module(nn.Module):
     if pool_method == 'layer_weight_sum_cls':
       self.weight_para = nn.Parameter(torch.ones(1, 24)/24)
     elif pool_method == 'layer_weight_sum_word':
-      self.weight_para = nn.Parameter(torch.ones(1, 1, 24)/24)
+      self.weight_para = nn.Parameter(torch.ones(1, 1, 24))
       self.weight_norm = nn.Softmax(dim=2)
       self.scalar = nn.Parameter(torch.tensor([1], dtype=torch.float32))
     self.__bert = bert
