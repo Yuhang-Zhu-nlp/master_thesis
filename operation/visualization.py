@@ -2,7 +2,6 @@ import sys
 import os
 
 import matplotlib.pyplot as plt
-from matplotlib.ticker import NullFormatter
 
 if not os.path.dirname(os.path.dirname(__file__)) in sys.path:
     sys.path.append(os.path.dirname(os.path.dirname(__file__)))
