@@ -206,3 +206,23 @@ def extract_comparison_vis(corpus: CorpusLoader,
     else:
         raise ValueError(f'unaccepted language: {language}')
     return re_lst
+
+def extract_comparison_fut(corpus: CorpusLoader,
+                           trigger: list,
+                           language: str = '') -> list:
+    re_lst = []
+    if language in ['English', 'Swedish']:
+        for sentence in corpus:
+            position_possible_aux = extract_trigger(sentence['token_lst'], trigger)
+            for aux_p in position_possible_aux:
+                verb_p = re.match(r'([0-9]+)' + ':' + 'advmod', sentence['tree_lst'][int(position) - 1])
+                re_lst.append(sentence['sent_id'])
+    elif language in ['Italian']:
+        for sentence in corpus:
+            for position, token in sentence['token_lst']:
+                if 'Tense=Fut' in sentence['label_lst'][int(position) - 1] and 'VERB' in sentence['pos_tag'][int(position) - 1]:
+                    if not token.lower() in re_lst:
+                        re_lst.append(token.lower())
+    else:
+        raise ValueError(f'unaccepted language: {language}')
+    return re_lst

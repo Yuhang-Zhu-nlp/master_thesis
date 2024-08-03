@@ -2,7 +2,8 @@ from .Loader import CorpusLoader
 from .Extractor import (extract_sentence_have,
                         tense_extractor_future,
                         extract_comparison,
-                        extract_comparison_vis)
+                        extract_comparison_vis,
+                        extract_comparison_fut)
 import json
 
 
@@ -37,12 +38,24 @@ class ExtractPipeline:
                 self.__langmode2id[f'{language}_{mode}'] = counter
                 counter += 1
 
-    def extract4vis(self, language: str, mode: str):
+    def extract4vis_cmp(self, language: str, mode: str):
         corpus = self.copora[self.__langmode2id[f'{language}_{mode}']]
         if language == 'English':
             trigger = 'er'
         elif language == 'Swedish':
             trigger = 're'
+        elif language == 'Italian':
+            trigger = 'più'
+        else:
+            trigger = 'plus'
+        return extract_comparison_vis(corpus, trigger,
+                                  language=language)
+    def extract4vis_fut(self, language: str, mode: str):
+        corpus = self.copora[self.__langmode2id[f'{language}_{mode}']]
+        if language == 'English':
+            trigger = 'have'
+        elif language == 'Swedish':
+            trigger = 'kommer'
         elif language == 'Italian':
             trigger = 'più'
         else:

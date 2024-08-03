@@ -27,7 +27,7 @@ class classfier_module(nn.Module):
       para.requires_grad = False
     self.__classifier_head = nn.Sequential(
         nn.Linear(hidden_size, hidden_size*2),
-        nn.Tanh(),
+        nn.ReLU(),
         nn.Linear(hidden_size*2, label_size)
     )
 
