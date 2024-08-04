@@ -3,7 +3,7 @@ from .Extractor import (extract_sentence_have,
                         tense_extractor_future,
                         extract_comparison,
                         extract_comparison_vis,
-                        extract_comparison_fut)
+                        extract_fut_vis)
 import json
 
 
@@ -53,14 +53,12 @@ class ExtractPipeline:
     def extract4vis_fut(self, language: str, mode: str):
         corpus = self.copora[self.__langmode2id[f'{language}_{mode}']]
         if language == 'English':
-            trigger = 'have'
+            trigger = 'will'
         elif language == 'Swedish':
             trigger = 'kommer'
         elif language == 'Italian':
-            trigger = 'più'
-        else:
-            trigger = 'plus'
-        return extract_comparison_vis(corpus, trigger,
+            trigger = ''
+        return extract_fut_vis(corpus, trigger,
                                   language=language)
 
     def extract(self, language: str, mode: str, type: str, is_pos: bool = True) -> list:

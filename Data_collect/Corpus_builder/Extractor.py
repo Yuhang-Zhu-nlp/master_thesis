@@ -207,16 +207,17 @@ def extract_comparison_vis(corpus: CorpusLoader,
         raise ValueError(f'unaccepted language: {language}')
     return re_lst
 
-def extract_comparison_fut(corpus: CorpusLoader,
+def extract_fut_vis(corpus: CorpusLoader,
                            trigger: list,
                            language: str = '') -> list:
     re_lst = []
     if language in ['English', 'Swedish']:
         for sentence in corpus:
-            position_possible_aux = extract_trigger(sentence['token_lst'], trigger)
+            position_possible_aux = extract_trigger(sentence['token_lst'], [trigger])
             for aux_p in position_possible_aux:
-                verb_p = re.match(r'([0-9]+)' + ':' + 'advmod', sentence['tree_lst'][int(position) - 1])
-                re_lst.append(sentence['sent_id'])
+                verb_p = re.match(r'([0-9]+)' + ':' + 'aux', sentence['tree_lst'][int(aux_p) - 1])
+                if verb_p and sentence['pos_tag'][int(verb_p.group(1))-1] == 'VERB' and sentence['token_lst'][int(verb_p.group(1))-1][1].lower() not in re_lst and sentence['token_lst'][int(verb_p.group(1))-1][1].lower() == sentence['lemma_lst'][int(verb_p.group(1))-1].lower():
+                    re_lst.append(trigger+ ' ' + sentence['token_lst'][int(verb_p.group(1))-1][1].lower())
     elif language in ['Italian']:
         for sentence in corpus:
             for position, token in sentence['token_lst']:
