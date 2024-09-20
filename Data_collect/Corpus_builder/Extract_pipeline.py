@@ -3,7 +3,8 @@ from .Extractor import (extract_sentence_have,
                         tense_extractor_future,
                         extract_comparison,
                         extract_comparison_vis,
-                        extract_fut_vis)
+                        extract_fut_vis,
+                        extract_have_vis)
 import json
 
 
@@ -60,6 +61,19 @@ class ExtractPipeline:
             trigger = ''
         return extract_fut_vis(corpus, trigger,
                                   language=language)
+
+    def extract4vis_have(self, language: str, mode: str):
+        corpus = self.copora[self.__langmode2id[f'{language}_{mode}']]
+        if language == 'English':
+            possessor, possessee, trigger = 'nsubj', 'obj', ['have', 'had', 'has']
+        elif language == 'Chinese':
+            possessor, possessee, trigger = 'nsubj', 'obj', ['有']
+        else:
+            possessor, possessee, trigger = 'cop:own', 'nsubj:cop', ['on']
+        return extract_have_vis(corpus, trigger,
+                                     language=language,
+                                     possessor=possessor,
+                                     possessee=possessee)
 
     def extract(self, language: str, mode: str, type: str, is_pos: bool = True) -> list:
         assert type in ['cmp', 'have', 'future']

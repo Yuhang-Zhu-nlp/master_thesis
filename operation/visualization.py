@@ -14,16 +14,18 @@ from libs.t_sne import tsne_visualizer
 from libs.opt_representations import get_representations
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--pos_path_test', nargs='+', help='test set for positive instances', required=True)
+parser.add_argument('--data_path', nargs='+', help='path to data for visualization', required=True)
 parser.add_argument('--labels', nargs='+', help='set labels', required=True)
 parser.add_argument("--model_name",
                     type=str,
-                    required=True,
+                    required=False,
                     choices=['en_bert', 'xlm-roberta', 'ernie'],
+                    default='xlm-roberta',
                     help="select model you want to train")
 parser.add_argument("--pool_method",
                     type=str,
-                    required=True,
+                    required=False,
+                    default='mean',
                     choices=['mean', 'layer_weight_sum_cls', 'layer_weight_sum_word'],
                     help="select pool method")
 parser.add_argument("-d", "--dimension", type=int, required=False, default=0, help="set embedding dimension")
@@ -34,7 +36,7 @@ parser.add_argument("--perplexity", type=int, required=False, default=30, help="
 parser.add_argument("--learning_rate", type=float, required=False, default=10, help="hyperparameter set-up: learning rate")
 args = parser.parse_args()
 
-dataset_test = dataset_l(args.pos_path_test)
+dataset_test = dataset_l(args.data_path)
 print(len(dataset_test))
 vector2position = tsne_visualizer(dimension=args.dimension,
                                   epoch=args.epoch,
@@ -66,7 +68,7 @@ if args.dimension == 3:
                               list(p_Y),list(p_Z), s=2, color=plt.cm.Spectral(int(l) * 30), label=args.labels[int(l)])
         sca, leg = ax[index].get_legend_handles_labels()
     fig.legend(sca, leg, loc='right')
-    plt.savefig(f'{args.out_dir}/layer{args.dimension}.jpg', dpi=600)
+    plt.savefig(f'{args.out_dir}/vis_output.jpg', dpi=600)
 else:
     fig, ax = plt.subplots(4, 6, sharex='col', sharey='row')
     for index, layer in enumerate(range(1,25)):
@@ -90,4 +92,4 @@ else:
                  list(p_Y), color=plt.cm.Spectral(int(l)*30), s=2, label = args.labels[int(l)])
       sca, leg = ax[i, j].get_legend_handles_labels()
     fig.legend(sca, leg, loc='right')
-    plt.savefig(f'{args.out_dir}/layer{args.dimension}.jpg', dpi=600)
+    plt.savefig(f'{args.out_dir}/vis_output.jpg', dpi=600)

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-path=/crex/proj/uppmax2020-2-2/yuhang/master_thesis_e2/master_thesis/venv
+path=$0
 
 mkdir -p $path
 module load conda

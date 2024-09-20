@@ -227,3 +227,52 @@ def extract_fut_vis(corpus: CorpusLoader,
     else:
         raise ValueError(f'unaccepted language: {language}')
     return re_lst
+
+def extract_have_vis(corpus: CorpusLoader,
+                          trigger: list,
+                          possessor: str = '',
+                          possessee: str = '',
+                          language: str = '') -> list:
+    if not (possessee or possessor):
+        raise ValueError('possessor and possessee can not be void string')
+    elif language not in ['English', 'Chinese', 'Finnish']:
+        raise ValueError(f'unaccepted language:{language}')
+    else:
+        re_lst = []
+        if language == 'Finnish':
+            for sentence in corpus:
+                possible_trigger_pos = extract_trigger(sentence['token_lst'], trigger)
+                for pos in possible_trigger_pos:
+                    posr_p = re.match(r'([0-9]+)' + ':' + 'cop:own', sentence['tree_lst'][int(pos)-1])
+                    if posr_p:
+                        posr_p = posr_p.group(1)
+                        for now, ele in enumerate(sentence['tree_lst']):
+                            if re.match(posr_p + ':' + 'nsubj:cop', ele):
+                                re_lst.append(
+                                    sentence['token_lst'][int(posr_p) -1][1].lower()+ ' '+ \
+                                    sentence['token_lst'][int(pos)-1][1].lower()+ ' '+ \
+                                    sentence['token_lst'][int(now)][1].lower()
+                                )
+                                break
+            return re_lst
+        for sentence in corpus:
+            possible_trigger_pos = extract_trigger(sentence['token_lst'], trigger)
+            posr = []
+            pose = []
+            for pos in possible_trigger_pos:
+                for now, ele in enumerate(sentence['tree_lst']):
+                    if posr:
+                        print(sentence['token_lst'])
+                    if not posr:
+                        posr =now if re.match(pos + ':' + possessor, ele) else []
+                    if not pose:
+                        pose =now if re.match(pos + ':' + possessee, ele) else []
+                if posr and pose:
+                    sen = sentence['token_lst'][posr][1].lower() + ' '+ \
+                          sentence['token_lst'][int(pos) - 1][1].lower() + ' ' + \
+                          sentence['token_lst'][pose][1].lower()
+                    if language == 'Chinese':
+                        sen = sen.replace(' ', '')
+                    if sen not in re_lst:
+                        re_lst.append(sen)
+        return re_lst

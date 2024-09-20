@@ -16,8 +16,9 @@ parser.add_argument("--neg_path_dev", type=str, required=True, help="development
 parser.add_argument("--pos_path_dev", type=str, required=True, help="development set for negative instances")
 parser.add_argument("--model_name",
                     type=str,
-                    required=True,
+                    required=False,
                     choices=['en_bert', 'xlm-roberta', 'ernie'],
+                    default='xlm-roberta',
                     help="select model you want to train")
 parser.add_argument("--pool_method",
                     type=str,

@@ -102,11 +102,12 @@ pipeline.file_write_in(Zh_fut_neg_test, f'{store_path}/zh_test_have_neg.json', '
 e = pipeline.extract4vis('Italian', 'train')
 pipeline.file_write_in4vis(e, f'{store_path}/it_test_cmp_vis.json',)
 '''
-'''
-Sw_fut_pos_train = pipeline.extract('Swedish', 'test', 'future', is_pos=True)
-print(len(Sw_fut_pos_train))
-pipeline.file_write_in(Sw_fut_pos_train, f'{store_path}/sw_test_fut_pos.json', 'Swedish', 'test')
-'''
+a = pipeline.extract4vis_have('Finnish', 'train')
+pipeline.file_write_in4vis(a, f'{store_path}/fi_train_have_vis.json')
 
-pipeline.file_write_in4vis(pipeline.extract4vis_fut('Italian', 'train'),
-                           f'{store_path}/it_train_fut_vis.json')
+import re
+try:
+    with open('sdafcsd.sh', 'r') as fp:
+        pass
+except FileNotFoundError as e:
+    raise

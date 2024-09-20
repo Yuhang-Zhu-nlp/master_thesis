@@ -99,7 +99,6 @@ class classfier_module(nn.Module):
         representation = self.__word_weight_sum(bert_out.hidden_states, input['attention_mask'], layer=self.__layer)
       else:
         raise ValueError(f'Unaccepted pooling method: {self.pool_method}')
-      representation = self.__classifier_head[0](representation)
     return representation
 
   def get_optim(self, lr_g1, lr, wd):
